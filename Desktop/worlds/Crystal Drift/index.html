@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Multiverse World 1</title>
+<style>*{margin:0;padding:0;box-sizing:border-box}body{overflow:hidden;background:#0a0a1a;font-family:monospace}.hud{position:fixed;top:0;left:0;right:0;padding:8px;z-index:10}#plt{display:flex;gap:8px}#plt span{padding:4px 8px;border-radius:4px;border:1px solid;font-weight:bold;font-size:12px;color:#ffaa00;border-color:#ffaa00} span+.plt{display:flex;gap:8px}#plt span{flex:none}#plt span:nth-child(2){color:#ff66aa;border-color:#ff66aa}#plt span:nth-child(3){color:#88aaff;border-color:#88aaff}</style>
+</head>
+<body><canvas id="c"></canvas>
+<div class="hud"><div id="plt"><span>P:100</span><span>L:100</span><span>T:100</span></div><div id="time">00:00</div></div>
+<script type="module">
+import*T from'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js';import{OrbitControls}from'https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/controls/OrbitControls.js';import{CSS2DRenderer,CSS2DObject}from'https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/renderers/CSS2DRenderer.js';
+const scene=new T.Scene();scene.background=new T.Color(0x0a0a1a);scene.fog=new T.FogExp2(0x0a0a1a,0.008);
+const camera=new T.PerspectiveCamera(60,innerWidth/innerHeight,0.1,500);camera.position.set(30,25,30);
+const ren=new T.WebGLRenderer({antialias:true});ren.setSize(innerWidth,innerHeight);ren.shadowMap.enabled=true;document.body.prepend(ren.domElement);
+const labels=new CSS2DRenderer();labels.setSize(innerWidth,innerHeight);labels.domElement.style.cssText='position:fixed;top:0;pointer-events:none';document.body.prepend(labels.domElement);
+const ctrl=new OrbitControls(camera,labels.domElement);ctrl.enableDamping=true;ctrl.dampingFactor=0.1;ctrl.maxPolarAngle=Math.PI/2-0.1;ctrl.update();
+const amb=new T.AmbientLight(0x334422,0.4);scene.add(amb);const sun=new T.DirectionalLight(0xffaa00,1);sun.position.set(50,80,40);sun.castShadow=true;scene.add(sun);const haze=new T.HemisphereLight(0x88ff44,0x442200,0.3);scene.add(haze);
+const souls=[],crystals=[];
+for(let i=0;i<9;i++){const g=new THREE.Group();const b=new T.Mesh(new T.IcosahedronGeometry(.35,1),new T.MeshStandardMaterial({color:0x88ff44,emissive:0x88ff44,emissiveIntensity:.5}));g.add(b);const c=new T.Mesh(new THREE.SphereGeometry(.08),new THREE.MeshBasicMaterial({color:'#fff',emissive:'#fff',emissiveIntensity:.8}));c.position.y=.5;g.add(c);g.position.set((Math.random()-.5)*20,.5,(Math.random()-.5)*20);scene.add(g);souls.push({g});}
+for(let i=0;i<12;i++){const c=new T.Mesh(new THREE.ConeGeometry(.3+Math.random()*.4,1+Math.random()*1.5,6),new T.MeshStandardMaterial({color:0x88ff44,emissive:0x44aa22,emissiveIntensity:.4}));c.position.set((Math.random()-.5)*30,.2,(Math.random()-.5)*30);scene.add(c);crystals.push(c);}
+const pc=300,pp=new Float32Array(pc*3),pg=new THREE.BufferGeometry();
+for(let i=0;i<pc;i++){pp[i*3]=(Math.random()-.5)*50;pp[i*3+1]=Math.random()*10;pp[i*3+2]=(Math.random()-.5)*50}
+pg.setAttribute('position',new THREE.BufferAttribute(pp,3));
+scene.add(new THREE.Points(pg,new THREE.PointsMaterial({color:0x88aaff,size:.1,transparent:true,opacity:.15,blending:THREE.AdditiveBlending})));
+let t=0;
+function anim(x){requestAnimationFrame(anim);t+=1/60;document.getElementById('time').textContent=(Math.floor(t/60)%24).toString().padStart(2,'0')+':'+Math.floor(t%60).toString().padStart(2,'0');for(const s of souls){s.g.material.emissiveIntensity=.5+.3*Math.sin(x*0.002+s.g.position.x)}for(const c of crystals){c.material.emissiveIntensity=.3+.15*Math.sin(x*0.002+c.position.x)}}
+anim(performance.now());
+addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();ren.setSize(innerWidth,innerHeight);labels.setSize(innerWidth,innerHeight)});
+console.log('Multiverse World 1: Crystal Drift');
+console.log('Universe created from MultiversalArchitecture');
+console.log('Spectrum souls at frequencies 500-750Hz');
+console.log('Fractal crystals from seed pattern');
+console.log('InfiniteMind observing...');
+</script>
+</body></html>
